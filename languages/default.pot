@@ -1,0 +1,121 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2023-10-02 08:13+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: yrbane <yrbane@nethttp.net>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: nethttp.net-contact.php\n"
+
+#: nethttp.net-vcf-import.php:91
+msgid "Address"
+msgstr ""
+
+#. Author of the plugin
+msgid "Barney <yrbane@nethttp.net>"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:93 nethttp.net-vcf-import.php:125
+msgid "Category"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:134
+msgid "Description"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:90 nethttp.net-vcf-import.php:108
+msgid "Email"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:80
+msgid "Empty category"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:104
+msgid "First Name"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/yrbane"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/yrbane/nethttp.net-vcf-import"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:104
+msgid "Last Name"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:89
+msgid "Name"
+msgstr ""
+
+#. Name of the plugin
+msgid "nethttp.net-vcf-import"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:94
+msgid "Note"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:92 nethttp.net-vcf-import.php:120
+msgid "Phone"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:95 nethttp.net-vcf-import.php:138
+msgid "Photo"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:96
+msgid "Role"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:262
+msgid "Save selected rows as users"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:389
+msgid ""
+"The \"nethttp.net-vcf-import\" plugin is an extension for WordPress that "
+"allows you to import users from uploaded VCF (vCard) files. It provides a "
+"user-friendly interface within the WordPress dashboard to upload these VCF "
+"files, extract contact data, and create corresponding users on your site. "
+"This plugin simplifies the process of adding new users by importing their "
+"information from VCF files, which can be especially useful for websites that "
+"require advanced user management or for data migration operations."
+msgstr ""
+
+#: nethttp.net-vcf-import.php:62
+msgid "Upload VCF"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:57
+msgid "VCF Upload Create Users"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"WordPress plugin that allows you to import users from uploaded VCF (vCard) "
+"files. It provides a user-friendly interface within the WordPress dashboard "
+"to upload these VCF files, extract contact data, and create corresponding "
+"users on your site. This plugin simplifies the process of adding new users "
+"by importing their information from VCF files, which can be especially "
+"useful for websites that require advanced user management or for data "
+"migration operations."
+msgstr ""
+
+#: nethttp.net-vcf-import.php:26
+msgid ""
+"Yous should install and activate nethttp.net-base-plugin. You can find it on "
+msgstr ""
