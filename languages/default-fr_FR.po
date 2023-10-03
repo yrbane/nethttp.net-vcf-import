@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nethttp-contact\n"
 "POT-Creation-Date: 2023-08-24 13:59+0200\n"
-"PO-Revision-Date: 2023-10-02 08:18+0000\n"
+"PO-Revision-Date: 2023-10-03 10:15+0000\n"
 "Last-Translator: \n"
 "Language-Team: Français\n"
 "Language: fr_FR\n"
@@ -19,31 +19,41 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "X-Loco-Version: 2.6.6; wp-6.3.1"
 
-#: nethttp.net-vcf-import.php:91
+#: nethttp.net-vcf-import.php:149
 msgid "Address"
 msgstr "Adresse"
+
+#: nethttp.net-vcf-import.php:436
+#, php-format
+msgid "An error occurred while creating the user %s %s"
+msgstr "Une erreur s'est produite lors de la création de l'utilisateur %s %s"
+
+#: nethttp.net-vcf-import.php:417
+#, php-format
+msgid "An error occurred while updating the user %s"
+msgstr "Une erreur s'est produite lors de la mise à jour de l'utilisateur %s"
 
 #. Author of the plugin
 msgid "Barney <yrbane@nethttp.net>"
 msgstr "Barney <yrbane@nethttp.net>"
 
-#: nethttp.net-vcf-import.php:93 nethttp.net-vcf-import.php:125
+#: nethttp.net-vcf-import.php:151 nethttp.net-vcf-import.php:183
 msgid "Category"
 msgstr "Catégorie"
 
-#: nethttp.net-vcf-import.php:134
+#: nethttp.net-vcf-import.php:192
 msgid "Description"
 msgstr "Description"
 
-#: nethttp.net-vcf-import.php:90 nethttp.net-vcf-import.php:108
+#: nethttp.net-vcf-import.php:148 nethttp.net-vcf-import.php:166
 msgid "Email"
 msgstr "Email"
 
-#: nethttp.net-vcf-import.php:80
+#: nethttp.net-vcf-import.php:138
 msgid "Empty category"
 msgstr "Catégorie vide"
 
-#: nethttp.net-vcf-import.php:104
+#: nethttp.net-vcf-import.php:162
 msgid "First Name"
 msgstr "Prénom"
 
@@ -56,11 +66,11 @@ msgstr "https://github.com/yrbane"
 msgid "https://github.com/yrbane/nethttp.net-vcf-import"
 msgstr "https://github.com/yrbane/nethttp.net-vcf-import"
 
-#: nethttp.net-vcf-import.php:104
+#: nethttp.net-vcf-import.php:162
 msgid "Last Name"
 msgstr "Nom de famille"
 
-#: nethttp.net-vcf-import.php:89
+#: nethttp.net-vcf-import.php:147
 msgid "Name"
 msgstr "Nom"
 
@@ -68,27 +78,42 @@ msgstr "Nom"
 msgid "nethttp.net-vcf-import"
 msgstr "nethttp.net-vcf-import"
 
-#: nethttp.net-vcf-import.php:94
+#: nethttp.net-vcf-import.php:528
+#, php-format
+msgid "No photo for %s"
+msgstr "Aucune photo pour %s"
+
+#: nethttp.net-vcf-import.php:152
 msgid "Note"
 msgstr "Note"
 
-#: nethttp.net-vcf-import.php:92 nethttp.net-vcf-import.php:120
+#: nethttp.net-vcf-import.php:93
+msgid "Path to User Images"
+msgstr "Chemin d'accès aux images utilisateur"
+
+#: nethttp.net-vcf-import.php:150 nethttp.net-vcf-import.php:178
 msgid "Phone"
 msgstr "Téléphone"
 
-#: nethttp.net-vcf-import.php:95 nethttp.net-vcf-import.php:138
+#: nethttp.net-vcf-import.php:153 nethttp.net-vcf-import.php:196
 msgid "Photo"
 msgstr "Photo"
 
-#: nethttp.net-vcf-import.php:96
+#: nethttp.net-vcf-import.php:154
 msgid "Role"
 msgstr "Rôle"
 
-#: nethttp.net-vcf-import.php:262
+#: nethttp.net-vcf-import.php:321
 msgid "Save selected rows as users"
 msgstr "Enregistrer les lignes sélectionnées en tant qu'utilisateurs"
 
-#: nethttp.net-vcf-import.php:389
+#: nethttp.net-vcf-import.php:90
+msgid "Select where to store user profile images relative to wp-content folder"
+msgstr ""
+"Sélectionnez où stocker les images de profil utilisateur par rapport au "
+"dossier wp-content"
+
+#: nethttp.net-vcf-import.php:534
 msgid ""
 "The \"nethttp.net-vcf-import\" plugin is an extension for WordPress that "
 "allows you to import users from uploaded VCF (vCard) files. It provides a "
@@ -108,11 +133,48 @@ msgstr ""
 "utile pour les sites Web nécessitant une gestion avancée des utilisateurs ou "
 "pour des opérations de migration de données."
 
-#: nethttp.net-vcf-import.php:62
-msgid "Upload VCF"
-msgstr "Téléverser le fichier VCF"
+#: nethttp.net-vcf-import.php:479
+#, php-format
+msgid "The path %s to user images do not exists"
+msgstr "Le chemin %s vers les images utilisateur n'existe pas"
 
-#: nethttp.net-vcf-import.php:57
+#: nethttp.net-vcf-import.php:484
+#, php-format
+msgid "The path %s to user images is not writable"
+msgstr ""
+"Le chemin %s vers les images utilisateur n'est pas accessible en écriture"
+
+#: nethttp.net-vcf-import.php:81
+msgid "The path is empty"
+msgstr "Le chemin est vide"
+
+#: nethttp.net-vcf-import.php:76
+msgid "The path to user images is not valid"
+msgstr "Le chemin d'accès aux images utilisateur n'est pas valide"
+
+#: nethttp.net-vcf-import.php:491
+msgid "The photo already exists"
+msgstr "La photo existe déjà"
+
+#: nethttp.net-vcf-import.php:118
+msgid "Upload VCF to create users"
+msgstr "Téléchargez VCF pour créer des utilisateurs"
+
+#: nethttp.net-vcf-import.php:433
+#, php-format
+msgid "User %s created successfully"
+msgstr "L'utilisateur %s a été créé avec succès"
+
+#: nethttp.net-vcf-import.php:414
+#, php-format
+msgid "User %s updated successfully"
+msgstr "L'utilisateur %s a été mis à jour avec succès"
+
+#: nethttp.net-vcf-import.php:89
+msgid "User Profile Images"
+msgstr "Images de profil utilisateur"
+
+#: nethttp.net-vcf-import.php:105
 msgid "VCF Upload Create Users"
 msgstr "Créer des utilisateurs à partir d'un fichier VCF"
 
@@ -134,6 +196,10 @@ msgstr ""
 "important leurs informations à partir de fichiers VCF, ce qui peut être "
 "particulièrement utile pour les sites Web nécessitant une gestion avancée "
 "des utilisateurs ou pour des opérations de migration de données."
+
+#: nethttp.net-vcf-import.php:534
+msgid "Work with"
+msgstr "Marche avec l'extension : "
 
 #: nethttp.net-vcf-import.php:26
 msgid ""

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-10-02 08:13+0000\n"
+"POT-Creation-Date: 2023-10-03 10:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: yrbane <yrbane@nethttp.net>\n"
 "Language-Team: \n"
@@ -17,31 +17,41 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: nethttp.net-contact.php\n"
 
-#: nethttp.net-vcf-import.php:91
+#: nethttp.net-vcf-import.php:149
 msgid "Address"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:436
+#, php-format
+msgid "An error occurred while creating the user %s %s"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:417
+#, php-format
+msgid "An error occurred while updating the user %s"
 msgstr ""
 
 #. Author of the plugin
 msgid "Barney <yrbane@nethttp.net>"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:93 nethttp.net-vcf-import.php:125
+#: nethttp.net-vcf-import.php:151 nethttp.net-vcf-import.php:183
 msgid "Category"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:134
+#: nethttp.net-vcf-import.php:192
 msgid "Description"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:90 nethttp.net-vcf-import.php:108
+#: nethttp.net-vcf-import.php:148 nethttp.net-vcf-import.php:166
 msgid "Email"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:80
+#: nethttp.net-vcf-import.php:138
 msgid "Empty category"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:104
+#: nethttp.net-vcf-import.php:162
 msgid "First Name"
 msgstr ""
 
@@ -53,11 +63,11 @@ msgstr ""
 msgid "https://github.com/yrbane/nethttp.net-vcf-import"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:104
+#: nethttp.net-vcf-import.php:162
 msgid "Last Name"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:89
+#: nethttp.net-vcf-import.php:147
 msgid "Name"
 msgstr ""
 
@@ -65,27 +75,40 @@ msgstr ""
 msgid "nethttp.net-vcf-import"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:94
+#: nethttp.net-vcf-import.php:528
+#, php-format
+msgid "No photo for %s"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:152
 msgid "Note"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:92 nethttp.net-vcf-import.php:120
+#: nethttp.net-vcf-import.php:93
+msgid "Path to User Images"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:150 nethttp.net-vcf-import.php:178
 msgid "Phone"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:95 nethttp.net-vcf-import.php:138
+#: nethttp.net-vcf-import.php:153 nethttp.net-vcf-import.php:196
 msgid "Photo"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:96
+#: nethttp.net-vcf-import.php:154
 msgid "Role"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:262
+#: nethttp.net-vcf-import.php:321
 msgid "Save selected rows as users"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:389
+#: nethttp.net-vcf-import.php:90
+msgid "Select where to store user profile images relative to wp-content folder"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:534
 msgid ""
 "The \"nethttp.net-vcf-import\" plugin is an extension for WordPress that "
 "allows you to import users from uploaded VCF (vCard) files. It provides a "
@@ -96,11 +119,47 @@ msgid ""
 "require advanced user management or for data migration operations."
 msgstr ""
 
-#: nethttp.net-vcf-import.php:62
-msgid "Upload VCF"
+#: nethttp.net-vcf-import.php:479
+#, php-format
+msgid "The path %s to user images do not exists"
 msgstr ""
 
-#: nethttp.net-vcf-import.php:57
+#: nethttp.net-vcf-import.php:484
+#, php-format
+msgid "The path %s to user images is not writable"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:81
+msgid "The path is empty"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:76
+msgid "The path to user images is not valid"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:491
+msgid "The photo already exists"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:118
+msgid "Upload VCF to create users"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:433
+#, php-format
+msgid "User %s created successfully"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:414
+#, php-format
+msgid "User %s updated successfully"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:89
+msgid "User Profile Images"
+msgstr ""
+
+#: nethttp.net-vcf-import.php:105
 msgid "VCF Upload Create Users"
 msgstr ""
 
@@ -113,6 +172,10 @@ msgid ""
 "by importing their information from VCF files, which can be especially "
 "useful for websites that require advanced user management or for data "
 "migration operations."
+msgstr ""
+
+#: nethttp.net-vcf-import.php:534
+msgid "Work with"
 msgstr ""
 
 #: nethttp.net-vcf-import.php:26
