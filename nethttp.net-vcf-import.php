@@ -4,7 +4,7 @@
  * Plugin Name: nethttp.net-vcf-import
  * Plugin URI: https://github.com/yrbane/nethttp.net-vcf-import
  * Description: WordPress plugin that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.
- * Version: 0.0.1
+ * Version: 1.0.0
  * Author: Barney <yrbane@nethttp.net>
  * Author URI: https://github.com/yrbane
  * Requires PHP: 7.4
@@ -39,30 +39,81 @@ if (!class_exists('BasePlugin')) {
  */
 class VCFUploadCreateUsersAdmin extends BasePlugin
 {
+    /**
+     * The name of the option that stores the path to the user images directory.
+     */
+    const OPTION_PATH_TO_USER_IMAGES = 'path_to_user_images';
+
     protected string $plugin_name = 'nethttp.net-vcf-import';
     protected string $plugin_nice_name = "VCF Import";
     protected string $plugin_author = 'Barney';
     protected string $plugin_short_description = 'The "nethttp.net-vcf-import" plugin is an extension for WordPress that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.';
-    protected string $version = '0.0.1';
+    protected string $version = '1.0.0';
     protected string $github_url = 'https://github.com/yrbane/nethttp.net-vcf-import';
 
+    /**
+     * add_hooks: Add hooks for the plugin.   
+     * 
+     */
+    protected function add_hooks(): void
+    {
+        parent::add_hooks();
+        add_action('admin_init', [$this, 'admin_init']);
+    }
 
+    /**
+     * admin_init: Add admin interface for the plugin.
+     */
+    public function admin_init(): void
+    {
+        register_setting('vcf_import_options', self::OPTION_PATH_TO_USER_IMAGES, function ($pathToUserImages) {
+            //Validate the path exists otherwise return the previous value
+            if (!is_dir($pathToUserImages)) {
+                if (!empty($pathToUserImages)) {
+                    //Create the directory relative to wp-content directory
+                    if (!is_dir(WP_CONTENT_DIR . '/' . $pathToUserImages)) {
+                        if (!mkdir(WP_CONTENT_DIR . '/' . $pathToUserImages, 0755, true)) {
+                            $this->showError(__('The path to user images is not valid'));
+                            return get_option(self::OPTION_PATH_TO_USER_IMAGES);
+                        }
+                    }
+                } else {
+                    $this->showError(__('The path is empty'));
+                    return get_option(self::OPTION_PATH_TO_USER_IMAGES);
+                }
+            }
+            return $pathToUserImages;
+        });
+
+        // Define the settings section and field
+        add_settings_section('user_images', __('User Profile Images'), function () {
+            echo '<p>' . __('Select where to store user profile images relative to wp-content folder') . ':</p>';
+        }, 'vcf_import_options');
+
+        add_settings_field(self::OPTION_PATH_TO_USER_IMAGES, __('Path to User Images'), function () {
+            $path = get_option(self::OPTION_PATH_TO_USER_IMAGES);
+            echo '<input type="text" name="' . self::OPTION_PATH_TO_USER_IMAGES . '" value="' . esc_attr($path) . '">';
+        }, 'vcf_import_options', 'user_images');
+    }
     /**
      * Displays the content of the admin page for the plugin.
      */
     public function admin_page_content(): void
     {
-?>
-        <div class="wrap">
-            <h2><?php echo __('VCF Upload Create Users', 'default'); ?></h2>
-            <form enctype="multipart/form-data" method="post" action="">
-                <!--input type="hidden" name="action" value="process_vcf_upload"-->
-                <?php wp_nonce_field('vcf_upload_nonce', 'vcf_upload_nonce'); ?>
-                <input type="file" name="vcf_file" accept=".vcf">
-                <input type="submit" name="upload_vcf" value="<?php echo __('Upload VCF', 'default'); ?>">
-            </form>
-        </div>
-    <?php
+        // Display the settings page content
+        echo '<div class="wrap"><h1>' . __('VCF Upload Create Users', 'default') . '</h1>';
+
+        echo '<form enctype="multipart/form-data" method="post" action=""><h2>' . __('Fichier VCF', 'default') . '</h2>';
+
+        wp_nonce_field('vcf_upload_nonce', 'vcf_upload_nonce');
+        echo '<input type="file" name="vcf_file" accept=".vcf">';
+        submit_button(__('Upload VCF to create users', 'default'), 'primary', 'upload_vcf');
+        echo '</form><form method="post" action="options.php">';
+        settings_fields('vcf_import_options');
+        do_settings_sections('vcf_import_options');
+        submit_button();
+        echo '</form></div>';
+
         $this->process_vcf_upload();
         $this->process_user_creation();
     }
@@ -111,7 +162,7 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
             foreach ($contact->adr as $adr) {
                 foreach ($adr as $key_adr => $aelement) {
                     if (!is_array($aelement)) {
-                        echo $this->input('contacts[' . $k . '][' . $key_adr . ']', $key_adr, $aelement, 'text') . '<br>';
+                        echo $this->input('contacts[' . $k . '][adr][' . $key_adr . ']', $key_adr, $aelement, 'text') . '<br>';
                     }
                 }
             }
@@ -140,18 +191,19 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
             echo '</td><td>';
 
             echo  $this->get_role_select('contacts[' . $k . '][role]', 'subscriber', $cathash); // Role column
-
+            /*
             echo '</td><td>';
             foreach ($contact as $key => $value) {
-                echo $key . ' ';
+                echo '<h3>' . $key . '</h3> <pre>' . print_r($value, true) . '</pre><br>';
             }
+            */
             echo '</td></tr>';
         }
         echo '</tbody>
             </table>
             ';
 
-    ?>
+?>
         <script>
             jQuery(document).ready(function($) {
                 $('#checkall-<?php echo $cathash ?>').on('click', function() {
@@ -322,7 +374,7 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
                         'last_name' => $contact['lastname'],
                         //'user_url' => $contact['url'],
                         //'nickname' => $contact['nickname'],
-                        'description' => $contact['note'],
+                        'description' => $contact['note'] ?? '',
                         'display_name' => ucfirst(strtolower($contact['firstname'])) . ' ' . ucfirst(strtolower($contact['lastname'])),
                         'user_email' => $contact['email'],
                         //'user_login' => $contact['user_login'],
@@ -352,8 +404,10 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
 
                         if (!is_wp_error($updated_user)) {
                             // User updated successfully
+                            $this->showNotice(sprintf(__('User %s updated successfully'), '<i>' . $user_data['user_email'] . '</i>'));
                         } else {
                             // An error occurred while updating the user
+                            $this->showError(sprintf(__('An error occurred while updating the user %s'), '<i>' . $user_data['user_email'] . '</i>'));
                         }
                     } else {
                         // Otherwise, create a new user
@@ -369,11 +423,26 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
                         $user_id = wp_insert_user($user_data);
 
                         if (!is_wp_error($user_id)) {
-                            $this->showNotice(__('User %s created successfully','<i>'.$user_data['user_email'].'</i>'));
+                            $this->showNotice(sprintf(__('User %s created successfully'), '<i>' . $user_data['user_email'] . '</i>'));
                         } else {
                             // An error occurred while creating the user
-                            $this->showError(__('An error occurred while creating the user %s','<i>'.$user_data['user_email'].'</i>'));
+                            $this->showError(sprintf(__('An error occurred while creating the user %s %s'), '<i>' . $user_data['user_email'] . '</i>', '<pre>' . print_r($user_id, true) . '</pre>'));
                         }
+                    }
+
+                    $user_data = array_merge($user_data, $contact);
+
+                    if (isset($user_id) && !is_wp_error($user_id)) {
+                        //set user meta
+                        if (isset($contact['description'])) {
+                            update_user_meta($user_id, 'description', $contact['description']);
+                        }
+
+                        if (isset($contact['adr'])) {
+                            update_user_meta($user_id, 'adresse', json_encode($contact['adr']));
+                        }
+
+                        $this->update_user_profile_image($user_id, $user_data);
                     }
                 }
             }
@@ -384,10 +453,78 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
         }
     }
 
+    /**
+     * Update the user profile image.
+     *
+     * @param int $user_id The ID of the user.
+     * @param array $contact The contact data.
+     */
+    protected function update_user_profile_image(int $user_id, array $contact): void
+    {
+        // Get db
+        global $wpdb;
+
+        // User profile images upload directory
+        $pathRelativeToWpContent = get_option(self::OPTION_PATH_TO_USER_IMAGES);
+        $pathToUserImages = WP_CONTENT_DIR . '/' . $pathRelativeToWpContent;
+
+        if (!is_dir($pathToUserImages)) {
+            $this->showError(sprintf(__('The path %s to user images do not exists'), $pathToUserImages));
+            return;
+        }
+
+        if (!is_writable($pathToUserImages)) {
+            $this->showError(sprintf(__('The path %s to user images is not writable'), $pathToUserImages));
+            return;
+        }
+
+        if (isset($contact['photo'])) {
+            $photoSum = md5($contact['photo']);
+            if (get_user_meta($user_id, $wpdb->prefix . 'user_avatar_sum', true) == $photoSum) {
+                $this->showWarning(sprintf(__('The photo already exists')));
+                return;
+            }
+
+
+            $image = base64_decode($contact['photo']);
+            $image_name = $user_id . '-' . $contact['firstname'] . '-' . $contact['lastname'] . '.png';
+            $image_path = $pathToUserImages . '/' . $image_name;
+            file_put_contents($image_path, $image);
+
+            $image_url = WP_CONTENT_URL . $pathRelativeToWpContent . '/' . $image_name;
+            //Save image as media
+            $attachment = array(
+                'guid'           => $image_url,
+                'post_mime_type' => 'image/png',
+                'post_title'     => $image_name,
+                'post_content'   => '',
+                'post_status'    => 'inherit'
+            );
+
+            // Insert the attachment into the media library
+            $attachment_id = wp_insert_attachment($attachment, $image_path);
+
+            // generate metadata for attachment
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+            $attachment_data = wp_generate_attachment_metadata($attachment_id, $image_path);
+            wp_update_attachment_metadata($attachment_id, $attachment_data);
+
+            // Optional: set the attachment as the featured image of an article
+            // $post_id is the ID of the post you want to associate the image with
+            //set_post_thumbnail($post_id, $attachment_id);
+
+            // Work with One User Avatar plugin
+            update_user_meta($user_id, $wpdb->prefix . 'user_avatar', $attachment_id);
+
+            update_user_meta($user_id, $wpdb->prefix . 'user_avatar_sum', $photoSum);
+        } else {
+            $this->showError(sprintf(__('No photo for %s'), '<i>' . $contact['user_email'] . '</i>'));
+        }
+    }
+
     protected function loadPluginFunctionality()
     {
-        //add_action('admin_menu', array($this, 'add_admin_page'));
-        $this->plugin_short_description = __('The "nethttp.net-vcf-import" plugin is an extension for WordPress that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.');
+        $this->plugin_short_description = __('The "nethttp.net-vcf-import" plugin is an extension for WordPress that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.') . ' ' . __('Work with') . ' <a href="/wp-admin/plugin-install.php?tab=plugin-information&plugin=one-user-avatar">One user avatar</a>';
     }
 }
 
