@@ -14,10 +14,11 @@ The VCF Import WordPress Plugin is a simple WordPress plugin that allows you to 
 - Supports categorization of imported contacts. You'll be able to import vcf's categories one by one
 - Customize user roles for imported users.
 - Easy-to-use and efficient user management tool.
-- Imports photos embeded in vcf file, work with extension : [One User Avatar](/wp-admin/plugin-install.php?tab=plugin-information&plugin=one-user-avatar)
-
+- Imports photos embeded in vcf file, work with extension : [One User Avatar](https://wordpress.org/plugins/one-user-avatar/)
 
 ## Installation
+
+Install first my other plugin : [nethttp.net-base-plugin](https://github.com/yrbane/nethttp.net-base-plugin)
 
 To install the plugin, follow these steps:
 
@@ -41,8 +42,7 @@ Contributions to the VCF Import WordPress Plugin are welcome! If you find a bug 
 
 ## License
 
-This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
-
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE.md) file for details.
 
 ## Acknowledgments
 
