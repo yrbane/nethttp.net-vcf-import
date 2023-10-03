@@ -18,6 +18,8 @@ The VCF Import WordPress Plugin is a simple WordPress plugin that allows you to 
 
 ## Installation
 
+Install first my other plugin : [nethttp.net-base-plugin](https://github.com/yrbane/nethttp.net-base-plugin)
+
 To install the plugin, follow these steps:
 
 1. Clone this repository or download the latest release from the [releases page](https://github.com/yrbane/nethttp.net-vcf-import/releases).
