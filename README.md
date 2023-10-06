@@ -2,7 +2,7 @@
 
 The VCF Import WordPress Plugin is a simple WordPress plugin that allows you to import contacts from a VCF file into your WordPress site. It provides an easy-to-use interface for selecting and uploading VCF files, and automatically creates new contacts based on the information in the file.
 
-![Plugin Version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)
+![Plugin Version](https://img.shields.io/badge/version-1.0.1-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-GPLv3-blue.svg)
 ![PHP Version](https://img.shields.io/badge/requires%20PHP-7.4-orange.svg)
 
