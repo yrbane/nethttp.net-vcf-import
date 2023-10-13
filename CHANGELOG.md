@@ -10,6 +10,16 @@ Fixed: for bug fixes
 Security: for security-related changes
 You can also include any other relevant sections that are specific to your project or team's needs.
 
+## [1.0.3]
+
+### Added 
+
+- Do not overwrite potentially existing users without administrator consent
+
+### Fixed 
+
+- changing vCard parser submodule repo
+
 ## [1.0.2] - 2023-10-13
 
 ### Fixed

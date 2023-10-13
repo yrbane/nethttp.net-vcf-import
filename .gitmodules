@@ -1,3 +1,3 @@
 [submodule "vCard-parser"]
 	path = vCard-parser
-	url = git@github.com:nuovo/vCard-parser.git
+	url = git@github.com:yrbane/vCard-parser.git
