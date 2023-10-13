@@ -44,6 +44,10 @@ Contributions to the VCF Import WordPress Plugin are welcome! If you find a bug 
 
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE.md) file for details.
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and updates to the plugin.
+
 ## Acknowledgments
 
 - Built with [WordPress](https://wordpress.org/)

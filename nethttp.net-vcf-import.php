@@ -4,7 +4,7 @@
  * Plugin Name: nethttp.net-vcf-import
  * Plugin URI: https://github.com/yrbane/nethttp.net-vcf-import
  * Description: WordPress plugin that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Barney <yrbane@nethttp.net>
  * Author URI: https://github.com/yrbane
  * Requires PHP: 7.4
@@ -15,7 +15,7 @@
  */
 
 // Include the vCard class
-require_once(__DIR__ . '/vCard.php');
+require_once(__DIR__ . '/vCard-parser/vCard.php');
 
 if (!class_exists('BasePlugin')) {
     include_once(realpath(plugin_dir_path(__FILE__) . '../nethttp.net-base-plugin/nethttp.net-base-plugin.php'));
@@ -48,7 +48,7 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
     protected string $plugin_nice_name = "VCF Import";
     protected string $plugin_author = 'Barney';
     protected string $plugin_short_description = 'The "nethttp.net-vcf-import" plugin is an extension for WordPress that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.';
-    protected string $version = '1.0.0';
+    protected string $version = '1.0.1';
     protected string $github_url = 'https://github.com/yrbane/nethttp.net-vcf-import';
 
     /**
@@ -366,6 +366,12 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
                 //var_dump($contact);
                 //continue;
                 if (!empty($contact['email'])) {
+
+                    // if WP_DEBUG is enabled change the email to admin email to avoid sending email to the contact (change the email user@host.ext to user+firstname_lastname@host.ext)
+                    if (defined('WP_DEBUG') && WP_DEBUG) {
+                        $contact['email'] = str_replace('@', '+' . $contact['firstname'] . '_' . $contact['lastname'] . '@', get_option('admin_email'));
+                    }
+
                     // Check if the email already exists
                     $existing_user = get_user_by('email', $contact['email']);
 
@@ -480,15 +486,16 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
 
         if (isset($contact['photo'])) {
             $photoSum = md5($contact['photo']);
-            if (get_user_meta($user_id, $wpdb->prefix . 'user_avatar_sum', true) == $photoSum) {
+            $image_name = $contact['firstname'] . '-' . $contact['lastname'] . '.png';
+            $image_path = $pathToUserImages . '/' . $image_name;
+
+            if (is_file($image_path) && get_user_meta($user_id, $wpdb->prefix . 'user_avatar_sum', true) == $photoSum) {
                 $this->showWarning(sprintf(__('The photo already exists')));
                 return;
             }
 
-
             $image = base64_decode($contact['photo']);
-            $image_name = $user_id . '-' . $contact['firstname'] . '-' . $contact['lastname'] . '.png';
-            $image_path = $pathToUserImages . '/' . $image_name;
+            
             file_put_contents($image_path, $image);
 
             $image_url = WP_CONTENT_URL . $pathRelativeToWpContent . '/' . $image_name;
@@ -501,8 +508,14 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
                 'post_status'    => 'inherit'
             );
 
+            $attachment_id = attachment_url_to_postid($image_url);
+            if ($attachment_id) {
+                wp_delete_attachment($attachment_id);   
+                $this->showNotice(sprintf(__('Delete old attachment for %s'), '<i>' . $contact['user_email'] . '</i>'));
+            }
+
             // Insert the attachment into the media library
-            $attachment_id = wp_insert_attachment($attachment, $image_path);
+            $attachment_id = wp_insert_attachment($attachment, $image_path);    
 
             // generate metadata for attachment
             require_once(ABSPATH . 'wp-admin/includes/image.php');
