@@ -4,7 +4,7 @@
  * Plugin Name: nethttp.net-vcf-import
  * Plugin URI: https://github.com/yrbane/nethttp.net-vcf-import
  * Description: WordPress plugin that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Barney <yrbane@nethttp.net>
  * Author URI: https://github.com/yrbane
  * Requires PHP: 7.4
@@ -48,7 +48,7 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
     protected string $plugin_nice_name = "VCF Import";
     protected string $plugin_author = 'Barney';
     protected string $plugin_short_description = 'The "nethttp.net-vcf-import" plugin is an extension for WordPress that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.';
-    protected string $version = '1.0.2';
+    protected string $version = '1.0.3';
     protected string $github_url = 'https://github.com/yrbane/nethttp.net-vcf-import';
 
     /**
@@ -118,6 +118,28 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
         $this->process_user_creation();
     }
 
+    /**
+     * protectUserEmail: Change the email of the user to admin email to avoid sending email to the contact (change the email user@host to adminuser+user.at_protected.host.ext@adminhost)
+     * @param string $email The email of the user.
+     * @return string The email of the user.
+     */
+    private function protectUserEmail($email): string
+    {
+        $admin_email = get_option('admin_email');
+        $transformed_user_email = str_replace('@', '.at_protected.', $email);
+
+        //Verify if the email is already changed   
+        if (strpos('.at_protected.', $email) !== false) {
+            return $email;
+        }
+
+        // if WP_DEBUG is enabled change the email to admin email to avoid sending email to the contact (change the email user@host to adminuser+user.at.host.ext@adminhost)
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $email = str_replace('@', '+' . $transformed_user_email . '@', $admin_email);
+        }
+        return $email;
+    }
+
 
     /**
      * Display a summary table of imported contacts.
@@ -150,14 +172,31 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
                 </thead>
                 <tbody>';
         foreach ($contacts as $k => $contact) {
-            echo '<tr class="data-row-' . $cathash . '"><td><input type="checkbox" value="1" name="selected[' . $k . ']" class="select-checkbox-' . $cathash . '"/></td><td>';
+            // First email is used for login
+            if (isset($contact->email[0])) {
+                $email = $contact->email[0]['Value'];
+            }
+
+            // Skip if no email
+            if (!isset($email)) {
+                continue;
+            }
+
+            // Check if the email already exists
+            $existing_user = get_user_by('email', $this->protectUserEmail($email));
+
+            echo '<tr class="data-row-' . $cathash . '" ><td><input type="checkbox" value="1" name="selected[' . $k . ']" class="checkbox-adduser select-checkbox-' . $cathash . '' . ($existing_user !== false ? ' user_exists_row' : '') . '"/></td><td>';
+            if ($existing_user !== false) {
+                echo '<a href="/wp-admin/user-edit.php?user_id=' . $existing_user->ID . '" style="color:red;font-weight:bold;">⚠️ ' . __('User already exists!') . '</a>';
+            }
+
             if (isset($contact->n[0])) {
                 echo $this->input('contacts[' . $k . '][lastname]', __('Last Name', 'default'), $contact->n[0]['LastName'], 'text') . ' ' . $this->input('contacts[' . $k . '][firstname]', __('First Name', 'default'), $contact->n[0]['FirstName'], 'text');
             }
             echo '</td><td>';
-            foreach ($contact->email as $email) {
-                echo $this->input('contacts[' . $k . '][email]', __('Email', 'default'), $email['Value'], 'text') . '<br>';
-            }
+
+            echo $this->input('contacts[' . $k . '][email]', __('Email', 'default'), $email, 'text');
+
             echo '</td><td>';
             foreach ($contact->adr as $adr) {
                 foreach ($adr as $key_adr => $aelement) {
@@ -207,24 +246,45 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
         <script>
             jQuery(document).ready(function($) {
                 $('#checkall-<?php echo $cathash ?>').on('click', function() {
+                    $('#warningOverwriteUser').remove();
                     $('.select-checkbox-<?php echo $cathash ?>').prop('checked', $(this).prop('checked'));
                     updateRowFields<?php echo $cathash ?>();
                 });
 
                 $('.select-checkbox-<?php echo $cathash ?>').on('change', function() {
+                    $('#warningOverwriteUser').remove();
                     updateRowFields<?php echo $cathash ?>();
                 });
 
                 function updateRowFields<?php echo $cathash ?>() {
+                    console.log('updateRowFields<?php echo $cathash ?>');
                     $('.data-row-<?php echo $cathash ?>').each(function() {
                         var isChecked = $(this).find('.select-checkbox-<?php echo $cathash ?>').prop('checked');
                         $(this).find('input[type="text"],input[type="hidden"]').prop('disabled', !isChecked);
                     });
+                    checkForUserToOverwrite();
+                }
+
+                function checkForUserToOverwrite() {
+                    if ($('.user_exists_row:checked').length > 0) {
+                        $('#createSelectedUsers').before('<div class="notice notice-warning" id="warningOverwriteUser"><p><?php echo __('Some users you have selected already exists!') ?></p>'+
+                        '<p><label><input type="checkbox" id="ok_overwriteIfChecked" /> <?php echo __('If you create them, the existing users will be overwritten! Check this if you want to overwrite') ?></label></p>'+
+                        '</div>');
+                        $('#createSelectedUsers').prop('disabled', true);
+                        $('#ok_overwriteIfChecked').on('change', function() {
+                            if ($(this).prop('checked')) {
+                                $('#createSelectedUsers').prop('disabled', false);
+                            } else {
+                                $('#createSelectedUsers').prop('disabled', true);
+                            }
+                        });
+                    } else {
+                        $('#warningOverwriteUser').remove();
+                    }
                 }
 
                 $('#role_select-<?php echo $cathash ?>').on('change', function() {
                     var selectedRole = $(this).val();
-                    console.log(selectedRole);
                     $('.role_select-<?php echo $cathash ?>').val(selectedRole);
                 });
 
@@ -311,7 +371,7 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
                 $this->display_recap_table($contacts, $cat);
             }
             echo '
-            <input type="submit" value="' . __('Save selected rows as users', 'default') . '" class="btn button" name="vcf_create_user" />
+            <input type="submit" value="' . __('Save selected rows as users', 'default') . '" class="btn button" name="vcf_create_user" id="createSelectedUsers"/>
             </form>
             </div>';
 
@@ -367,10 +427,7 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
                 //continue;
                 if (!empty($contact['email'])) {
 
-                    // if WP_DEBUG is enabled change the email to admin email to avoid sending email to the contact (change the email user@host.ext to user+firstname_lastname@host.ext)
-                    if (defined('WP_DEBUG') && WP_DEBUG) {
-                        $contact['email'] = str_replace('@', '+' . $contact['firstname'] . '_' . $contact['lastname'] . '@', get_option('admin_email'));
-                    }
+                    $contact['email'] = $this->protectUserEmail($contact['email']);
 
                     // Check if the email already exists
                     $existing_user = get_user_by('email', $contact['email']);
@@ -387,14 +444,13 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
                         //'user_pass' => $contact['user_pass'], // Make sure to properly secure the password
                         //'user_nicename' => $contact['user_nicename'],
                         'user_registered' => date('Y-m-d H:i:s'),
-                        'role' => $contact['role'], // User role
                         'user_status' => 0, // User status (0 = active, 1 = pending activation, -1 = suspended)
                         'show_admin_bar_front' => 'true', // Show admin bar on front end
-                        'locale' => '', // User locale (e.g., 'fr_FR')
+                        'locale' => 'fr_FR', // User locale (e.g., 'fr_FR')
                         'rich_editing' => 'true', // Enable visual editor
                         'comment_shortcuts' => 'false', // Comment shortcuts
                         'admin_color' => 'fresh', // Admin color scheme (e.g., 'fresh' or 'classic')
-                        'use_ssl' => '0', // Use SSL (0 = no, 1 = yes)
+                        'use_ssl' => '1', // Use SSL (0 = no, 1 = yes)
                         'show_admin_color_scheme_picker' => 'true', // Show admin color scheme picker
                         'wp_capabilities' => array('subscriber' => true), // User capabilities (default to subscriber)
                         'wp_user_level' => 0, // User level (0 = subscriber, 10 = administrator)
@@ -495,7 +551,7 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
             }
 
             $image = base64_decode($contact['photo']);
-            
+
             file_put_contents($image_path, $image);
 
             $image_url = WP_CONTENT_URL . $pathRelativeToWpContent . '/' . $image_name;
@@ -510,12 +566,12 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
 
             $attachment_id = attachment_url_to_postid($image_url);
             if ($attachment_id) {
-                wp_delete_attachment($attachment_id);   
+                wp_delete_attachment($attachment_id);
                 $this->showNotice(sprintf(__('Delete old attachment for %s'), '<i>' . $contact['user_email'] . '</i>'));
             }
 
             // Insert the attachment into the media library
-            $attachment_id = wp_insert_attachment($attachment, $image_path);    
+            $attachment_id = wp_insert_attachment($attachment, $image_path);
 
             // generate metadata for attachment
             require_once(ABSPATH . 'wp-admin/includes/image.php');
