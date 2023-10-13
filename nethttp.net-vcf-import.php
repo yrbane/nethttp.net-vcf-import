@@ -4,7 +4,7 @@
  * Plugin Name: nethttp.net-vcf-import
  * Plugin URI: https://github.com/yrbane/nethttp.net-vcf-import
  * Description: WordPress plugin that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Barney <yrbane@nethttp.net>
  * Author URI: https://github.com/yrbane
  * Requires PHP: 7.4
@@ -48,7 +48,7 @@ class VCFUploadCreateUsersAdmin extends BasePlugin
     protected string $plugin_nice_name = "VCF Import";
     protected string $plugin_author = 'Barney';
     protected string $plugin_short_description = 'The "nethttp.net-vcf-import" plugin is an extension for WordPress that allows you to import users from uploaded VCF (vCard) files. It provides a user-friendly interface within the WordPress dashboard to upload these VCF files, extract contact data, and create corresponding users on your site. This plugin simplifies the process of adding new users by importing their information from VCF files, which can be especially useful for websites that require advanced user management or for data migration operations.';
-    protected string $version = '1.0.1';
+    protected string $version = '1.0.2';
     protected string $github_url = 'https://github.com/yrbane/nethttp.net-vcf-import';
 
     /**

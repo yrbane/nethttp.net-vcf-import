@@ -51,5 +51,5 @@ See [CHANGELOG.md](CHANGELOG.md) for a list of changes and updates to the plugin
 ## Acknowledgments
 
 - Built with [WordPress](https://wordpress.org/)
-- Uses the [vCard class](https://github.com/jeroendesloovere/vcard) for VCF file parsing.
+- Uses the [vCard class](https://github.com/nuovo/vcard) for VCF file parsing.
 - Inspired by the need for efficient user management in WordPress.
