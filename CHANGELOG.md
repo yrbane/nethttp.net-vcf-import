@@ -15,6 +15,7 @@ You can also include any other relevant sections that are specific to your proje
 ### Fixed
 
 - The url of the vCard parser in README
+- Removing translation backup from repo
 
 ## [1.0.1] - 2023-10-13
 
